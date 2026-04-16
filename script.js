@@ -41,32 +41,31 @@ async function savePlayerUpdate(updatedData) {
 }
 
 // --- MODAL LOGIC ---
+// --- MODAL LOGIC ---
 function openEditModal(name) {
     console.log("Opening modal for:", name);
     
-    // Find player - checking for 'Name' or 'name' keys from Google Sheet
     const player = players.find(p => (p.Name || p.name || "").toString().trim() === name.toString().trim());
 
     if (!player) {
-        console.error("Player not found in local array. Available:", players);
-        showToast("Error: Player not found", true);
+        console.error("Player not found!");
         return;
     }
 
     editingPlayerName = name; 
 
-    // Match your Sheet Headers: 'Name', 'Value', 'Byes'
     document.getElementById('editPlayerName').value = player.Name || player.name || "";
     document.getElementById('editPlayerPoints').value = player.Value || player.value || player.Points || 0;
     document.getElementById('editPlayerByes').value = player.Byes || player.byes || 0;
     
+    // Switch to using the CSS class 'active'
     const modal = document.getElementById('editModal');
-    modal.style.setProperty('display', 'flex', 'important');
-    console.log("Modal display set to:", modal.style.display);
+    modal.classList.add('active'); 
 }
 
 function closeModal() {
-    document.getElementById('editModal').style.display = 'none';
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('active');
 }
 
 // --- UI RENDERING ---
