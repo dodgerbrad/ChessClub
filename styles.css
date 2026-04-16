@@ -1,0 +1,306 @@
+
+/* ===== Root Variables ===== */
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #64748b;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+
+    --bg-color: #ffffff;
+    --bg-secondary: #f8fafc;
+
+    --text-color: #1e293b;
+    --text-secondary: #64748b;
+
+    --border-color: #e2e8f0;
+
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+    --radius: 8px;
+    --transition: 0.3s ease;
+}
+
+/* ===== Dark Mode ===== */
+body.dark-mode {
+    --bg-color: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-color: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border-color: #334155;
+}
+
+/* ===== Global ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* ===== Header ===== */
+.header {
+    background: linear-gradient(135deg, var(--primary-color), #1e40af);
+    color: white;
+    padding: 30px;
+    border-radius: var(--radius);
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-lg);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.title {
+    font-size: 2rem;
+}
+
+/* ===== Theme Toggle ===== */
+.theme-toggle {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* ===== Sections ===== */
+.section {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 25px;
+    border-radius: var(--radius);
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.section:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.section-title {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+/* ===== Forms ===== */
+.input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    transition: var(--transition);
+}
+
+.input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn:focus-visible {
+    outline: 3px solid var(--primary-color);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    color: white;
+}
+
+.btn-sm {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+/* ===== Table ===== */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.rankings-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rankings-table th {
+    background: var(--bg-secondary);
+    padding: 14px;
+    text-align: left;
+}
+
+.rankings-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rankings-table tr:hover {
+    background: var(--bg-secondary);
+}
+
+body.dark-mode .rankings-table tr:hover {
+    background: #334155;
+}
+
+/* ===== Rank Highlight ===== */
+.rankings-table tr:nth-child(1) {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+/* ===== Badges ===== */
+.points-badge {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.byes-badge {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+/* ===== Actions ===== */
+.action-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+/* ===== Empty ===== */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+/* ===== Modal ===== */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--bg-color);
+    padding: 25px;
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ===== Toast ===== */
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: var(--primary-color);
+    color: white;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.error { background: var(--danger-color); }
+.toast.success { background: var(--success-color); }
+
+/* ===== Mobile Upgrade ===== */
+@media (max-width: 600px) {
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .rankings-table thead {
+        display: none;
+    }
+
+    .rankings-table tr {
+        display: block;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 10px;
+    }
+
+    .rankings-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+Displaying styles.css.
