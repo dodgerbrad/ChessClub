@@ -60,7 +60,9 @@ function openEditModal(name) {
     document.getElementById('editPlayerPoints').value = player.Value || player.value || player.Points || 0;
     document.getElementById('editPlayerByes').value = player.Byes || player.byes || 0;
     
-    document.getElementById('editModal').style.display = 'flex';
+    const modal = document.getElementById('editModal');
+    modal.style.setProperty('display', 'flex', 'important');
+    console.log("Modal display set to:", modal.style.display);
 }
 
 function closeModal() {
