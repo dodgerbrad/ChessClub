@@ -141,9 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTable(e.target.value);
     });
 
-    document.getElementById('themeToggle').onclick = () => {
-        document.body.classList.toggle('dark-theme');
-    };
+    // Inside DOMContentLoaded
+document.getElementById('themeToggle').onclick = () => {
+    document.body.classList.toggle('dark-mode'); // Matches CSS 'dark-mode'
+};
 
     document.getElementById('modalCancel').onclick = closeModal;
     document.getElementById('refreshBtn').onclick = loadData;
