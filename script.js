@@ -1,10 +1,10 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXhuYrJpXJaiY4LIO0dkL-A1BsVZ8gjZFW5xb7zJK8dauWBCfNzkRASCh09OAobpe4DA/exec';
 let players = [];
-let editingPlayerName = ""; // To track who we are editing
+let editingPlayerName = ""; 
 
 // --- DATA FUNCTIONS ---
 async function loadData() {
-    showToast("Loading...");
+    showToast("Loading rankings...");
     try {
         const response = await fetch(SCRIPT_URL);
         const result = await response.json();
@@ -13,7 +13,20 @@ async function loadData() {
             renderTable();
             updateStats();
         }
-    } catch (e) { showToast("Load failed", true); }
+    } catch (e) { 
+        console.error(e);
+        showToast("Load failed", true); 
+    }
+}
+
+async function addPlayer(name) {
+    showToast("Adding player...");
+    await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ action: 'add', name: name })
+    });
+    setTimeout(loadData, 1500); 
 }
 
 async function savePlayerUpdate(updatedData) {
@@ -24,15 +37,16 @@ async function savePlayerUpdate(updatedData) {
         body: JSON.stringify({ action: 'update', oldName: editingPlayerName, ...updatedData })
     });
     closeModal();
-    setTimeout(loadData, 1000); // Refresh data
+    setTimeout(loadData, 1500); 
 }
 
 // --- MODAL LOGIC ---
 function openEditModal(name) {
-    const player = players.find(p => (p.Name || p.name) === name);
+    // Find player using case-insensitive check
+    const player = players.find(p => (p.Name || p.name) == name);
     if (!player) return;
 
-    editingPlayerName = name; // Store original name to find the row later
+    editingPlayerName = name; 
     document.getElementById('editPlayerName').value = player.Name || player.name;
     document.getElementById('editPlayerPoints').value = player.Points || player.points || 0;
     document.getElementById('editPlayerByes').value = player.Byes || player.byes || 0;
@@ -47,8 +61,19 @@ function closeModal() {
 // --- UI RENDERING ---
 function renderTable(filterTerm = '') {
     const tableBody = document.getElementById('rankingsTable');
-    const filtered = players.filter(p => (p.Name || p.name || "").toLowerCase().includes(filterTerm.toLowerCase()));
+    const emptyState = document.getElementById('emptyState');
     
+    const filtered = players.filter(p => 
+        (p.Name || p.name || "").toLowerCase().includes(filterTerm.toLowerCase())
+    );
+    
+    if (filtered.length === 0) {
+        emptyState.style.display = 'block';
+        tableBody.innerHTML = '';
+        return;
+    }
+
+    emptyState.style.display = 'none';
     tableBody.innerHTML = filtered.map((p, i) => `
         <tr>
             <td>${i + 1}</td>
@@ -56,15 +81,41 @@ function renderTable(filterTerm = '') {
             <td>${p.Points || p.points || 0}</td>
             <td>${p.Byes || p.byes || 0}</td>
             <td>${p.Games || p.games || 0}</td>
-            <td><button class="btn btn-secondary btn-sm" onclick="openEditModal('${p.Name || p.name}')">Edit</button></td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="openEditModal('${p.Name || p.name}')">Edit</button>
+            </td>
         </tr>
     `).join('');
-    document.getElementById('emptyState').style.display = filtered.length ? 'none' : 'block';
+}
+
+// --- UTILITIES ---
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = 'toast show';
+    if (isError) toast.style.backgroundColor = '#ff4444';
+    else toast.style.backgroundColor = '#333';
+    
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function updateStats() {
+    const totalEl = document.getElementById('totalPlayers');
+    if (totalEl) totalEl.textContent = players.length;
 }
 
 // --- EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
+
+    // Add Player Form
+    document.getElementById('addPlayerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('playerName');
+        await addPlayer(input.value);
+        input.value = '';
+    });
 
     // Edit Form Submit
     document.getElementById('editPlayerForm').addEventListener('submit', (e) => {
@@ -73,13 +124,20 @@ document.addEventListener('DOMContentLoaded', () => {
             name: document.getElementById('editPlayerName').value,
             value: document.getElementById('editPlayerPoints').value,
             byes: document.getElementById('editPlayerByes').value,
-            games: 0 // You can add a field for this in the modal if needed
+            games: 0 
         });
     });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        renderTable(e.target.value);
+    });
+
+    // Theme Toggle
+    document.getElementById('themeToggle').onclick = () => {
+        document.body.classList.toggle('dark-theme');
+    };
 
     document.getElementById('modalCancel').onclick = closeModal;
     document.getElementById('refreshBtn').onclick = loadData;
 });
-
-function showToast(m, err) { /* same as before */ }
-function updateStats() { document.getElementById('totalPlayers').textContent = players.length; }
