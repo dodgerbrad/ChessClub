@@ -14,7 +14,7 @@ async function loadData() {
             updateStats();
         }
     } catch (e) { 
-        console.error(e);
+        console.error("Load error:", e);
         showToast("Load failed", true); 
     }
 }
@@ -42,31 +42,26 @@ async function savePlayerUpdate(updatedData) {
 
 // --- MODAL LOGIC ---
 function openEditModal(name) {
-    // 1. Find the player using a very flexible check
-    const player = players.find(p => {
-        const pName = p.Name || p.name || p.Player || "";
-        return pName.toString().trim() === name.toString().trim();
-    });
+    console.log("Opening modal for:", name);
+    
+    // Find player - checking for 'Name' or 'name' keys from Google Sheet
+    const player = players.find(p => (p.Name || p.name || "").toString().trim() === name.toString().trim());
 
-    // 2. If no player is found, don't just "freeze"—alert the user
     if (!player) {
-        console.error("Player not found in local data:", name);
-        showToast("Could not find player data", true);
+        console.error("Player not found in local array. Available:", players);
+        showToast("Error: Player not found", true);
         return;
     }
 
-    // 3. Store the name for the update action
     editingPlayerName = name; 
 
-    // 4. Fill modal fields, checking both "Value" and "Points" column names
+    // Match your Sheet Headers: 'Name', 'Value', 'Byes'
     document.getElementById('editPlayerName').value = player.Name || player.name || "";
-    document.getElementById('editPlayerPoints').value = player.Value || player.value || player.Points || player.points || 0;
+    document.getElementById('editPlayerPoints').value = player.Value || player.value || player.Points || 0;
     document.getElementById('editPlayerByes').value = player.Byes || player.byes || 0;
     
-    // 5. Finally, show the modal
     document.getElementById('editModal').style.display = 'flex';
 }
-
 
 function closeModal() {
     document.getElementById('editModal').style.display = 'none';
@@ -88,18 +83,21 @@ function renderTable(filterTerm = '') {
     }
 
     emptyState.style.display = 'none';
-    tableBody.innerHTML = filtered.map((p, i) => `
-        <tr>
-            <td>${i + 1}</td>
-            <td>${p.Name || p.name}</td>
-            <td>${p.Points || p.points || 0}</td>
-            <td>${p.Byes || p.byes || 0}</td>
-            <td>${p.Games || p.games || 0}</td>
-            <td>
-                <button class="btn btn-secondary btn-sm" onclick="openEditModal('${p.Name || p.name}')">Edit</button>
-            </td>
-        </tr>
-    `).join('');
+    tableBody.innerHTML = filtered.map((p, i) => {
+        const pName = (p.Name || p.name || "Unknown").replace(/'/g, "\\'"); // Escape single quotes for the onclick
+        return `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${p.Name || p.name}</td>
+                <td>${p.Value || p.value || p.Points || 0}</td>
+                <td>${p.Byes || p.byes || 0}</td>
+                <td>${p.Games || p.games || 0}</td>
+                <td>
+                    <button class="btn btn-secondary btn-sm" onclick="openEditModal('${pName}')">Edit</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
 // --- UTILITIES ---
@@ -108,9 +106,7 @@ function showToast(message, isError = false) {
     if (!toast) return;
     toast.textContent = message;
     toast.className = 'toast show';
-    if (isError) toast.style.backgroundColor = '#ff4444';
-    else toast.style.backgroundColor = '#333';
-    
+    toast.style.backgroundColor = isError ? '#ff4444' : '#333';
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
@@ -123,7 +119,6 @@ function updateStats() {
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
 
-    // Add Player Form
     document.getElementById('addPlayerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const input = document.getElementById('playerName');
@@ -131,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         input.value = '';
     });
 
-    // Edit Form Submit
     document.getElementById('editPlayerForm').addEventListener('submit', (e) => {
         e.preventDefault();
         savePlayerUpdate({
@@ -142,12 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Search
     document.getElementById('searchInput').addEventListener('input', (e) => {
         renderTable(e.target.value);
     });
 
-    // Theme Toggle
     document.getElementById('themeToggle').onclick = () => {
         document.body.classList.toggle('dark-theme');
     };
