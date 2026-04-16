@@ -42,17 +42,31 @@ async function savePlayerUpdate(updatedData) {
 
 // --- MODAL LOGIC ---
 function openEditModal(name) {
-    // Find player using case-insensitive check
-    const player = players.find(p => (p.Name || p.name) == name);
-    if (!player) return;
+    // 1. Find the player using a very flexible check
+    const player = players.find(p => {
+        const pName = p.Name || p.name || p.Player || "";
+        return pName.toString().trim() === name.toString().trim();
+    });
 
+    // 2. If no player is found, don't just "freeze"—alert the user
+    if (!player) {
+        console.error("Player not found in local data:", name);
+        showToast("Could not find player data", true);
+        return;
+    }
+
+    // 3. Store the name for the update action
     editingPlayerName = name; 
-    document.getElementById('editPlayerName').value = player.Name || player.name;
-    document.getElementById('editPlayerPoints').value = player.Points || player.points || 0;
+
+    // 4. Fill modal fields, checking both "Value" and "Points" column names
+    document.getElementById('editPlayerName').value = player.Name || player.name || "";
+    document.getElementById('editPlayerPoints').value = player.Value || player.value || player.Points || player.points || 0;
     document.getElementById('editPlayerByes').value = player.Byes || player.byes || 0;
     
+    // 5. Finally, show the modal
     document.getElementById('editModal').style.display = 'flex';
 }
+
 
 function closeModal() {
     document.getElementById('editModal').style.display = 'none';
