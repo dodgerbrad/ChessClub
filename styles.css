@@ -302,17 +302,20 @@ body.dark-mode .rankings-table tr:hover {
     .action-buttons {
         flex-direction: column;
     }
-/* Ensure the modal is hidden by default and centered when shown */
+/* ===== Modal ===== */
 .modal {
-    display: none; /* JavaScript changes this to 'flex' */
+    display: none; /* Keeps it out of the layout */
     position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
     z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+    opacity: 0;
+    transition: opacity 0.3s ease;
     justify-content: center;
     align-items: center;
 }
 
+.modal.active {
+    display: flex; /* Makes it visible */
+    opacity: 1;
+}
