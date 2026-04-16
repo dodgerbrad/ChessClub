@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwwhbfwLxRBC5zSn6f4lOdmjDl92rzMht61coG_nx0xBSs0gTC2VjjMqutMY3ffyUihZA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyipnVRqOfSazR2NDEnJKjBGJEBqkDo7Thoi8xv7ii_xh7Qatt6uIXL8xUwpfyqIbgEPg/exec';
 let players = [];
 let editingPlayerName = ""; // To track who we are editing
 
