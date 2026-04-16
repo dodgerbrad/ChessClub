@@ -302,5 +302,17 @@ body.dark-mode .rankings-table tr:hover {
     .action-buttons {
         flex-direction: column;
     }
-    
-Displaying styles.css.
+/* Ensure the modal is hidden by default and centered when shown */
+.modal {
+    display: none; /* JavaScript changes this to 'flex' */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+}
+
